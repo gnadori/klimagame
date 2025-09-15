@@ -1,0 +1,325 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Animal Climate and Continent Game - Final Edition!</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka+One&family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            text-align: center;
+            transition: background 1s ease-in-out;
+            color: #fff;
+        }
+        #game-container {
+            max-width: 500px;
+            margin: 50px auto;
+            padding: 20px;
+            background-color: rgba(0, 0, 0, 0.4);
+            border-radius: 20px;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+        }
+        h1 {
+            font-family: 'Fredoka One', cursive;
+            font-size: 2.5em;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 15px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease-in-out;
+        }
+        img:hover {
+            transform: scale(1.05);
+        }
+        .dropdowns {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+        }
+        select, button {
+            padding: 12px 20px;
+            font-size: 16px;
+            margin: 5px;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        select {
+            background-color: rgba(255, 255, 255, 0.8);
+        }
+        button {
+            background-image: linear-gradient(45deg, #ff8a00, #e52e71);
+            color: white;
+            font-weight: bold;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        button:hover {
+            transform: translateY(-2px) scale(1.05);
+        }
+        #feedback {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            height: 30px;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+        #score, #timer {
+            font-size: 24px;
+            font-weight: bold;
+            margin: 10px 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
+        }
+        #timer {
+            color: #fff;
+        }
+        .progress-bar {
+            width: 100%;
+            background-color: rgba(0, 0, 0, 0.2);
+            border-radius: 10px;
+            overflow: hidden;
+            margin-top: 10px;
+        }
+        .progress {
+            height: 10px;
+            width: 100%;
+            background-image: linear-gradient(45deg, #ff8a00, #e52e71);
+            transition: width 1s linear;
+        }
+        .animal-image-container {
+            opacity: 0;
+            transition: opacity 0.5s ease-in-out;
+        }
+        .animal-image-container.visible {
+            opacity: 1;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body>
+
+<div id="game-container">
+    <h1>Guess the Animal's Climate and Continent!</h1>
+    <div id="score">Score: 0</div>
+    <div id="timer">Time left: 20</div>
+    <div class="progress-bar">
+        <div class="progress" id="progress"></div>
+    </div>
+    <div class="animal-image-container" id="animal-image-container">
+        <img id="animal-image" src="" alt="Animal Image">
+    </div>
+    <div class="dropdowns">
+        <select id="climate-select">
+            <option value="">Select Climate</option>
+            <option value="Egyenlítői">Egyenlítői</option><option value="Sarkköri">Sarkköri</option><option value="Száraz kontinentális">Száraz kontinentális</option><option value="Szubtrópusi">Szubtrópusi</option><option value="Trópusi monszun">Trópusi monszun</option><option value="Átmeneti">Átmeneti</option><option value="Átmenetei">Átmenetei</option>
+        </select>
+        <select id="continent-select">
+            <option value="">Select Continent</option>
+            <option value="Afrika">Afrika</option><option value="Ausztrália">Ausztrália</option><option value="Dél-Amerika">Dél-Amerika</option><option value="Európa">Európa</option><option value="Ázsia">Ázsia</option><option value="Észak-Amerika">Észak-Amerika</option>
+        </select>
+    </div>
+    <button id="check-btn">Check Answer</button>
+    <button id="next-btn" style="display: none;">Next Animal</button>
+    <div id="feedback"></div>
+</div>
+
+<script>
+    // Az adatok tárolására szolgáló változó, amit a CSV-ből töltünk fel
+    let gameData = [];
+    let availableAnimals = [];
+    let currentAnimal;
+    let score = 0;
+    let timer;
+    let timeLeft = 20;
+
+    // DOM elemek kiválasztása (ez nem változott)
+    const animalImageContainer = document.getElementById('animal-image-container');
+    const animalImage = document.getElementById('animal-image');
+    const climateSelect = document.getElementById('climate-select');
+    const continentSelect = document.getElementById('continent-select');
+    const checkBtn = document.getElementById('check-btn');
+    const nextBtn = document.getElementById('next-btn');
+    const feedback = document.getElementById('feedback');
+    const scoreDisplay = document.getElementById('score');
+    const timerDisplay = document.getElementById('timer');
+    const progress = document.getElementById('progress');
+
+    // A háttérszínek objektuma (ez sem változott)
+    const continentColors = {
+        'Ausztrália': 'linear-gradient(135deg, #f7b733, #fc4a1a)',
+        'Ázsia': 'linear-gradient(135deg, #6a11cb, #2575fc)',
+        'Dél-Amerika': 'linear-gradient(135deg, #00b09b, #96c93d)',
+        'Afrika': 'linear-gradient(135deg, #ff7e5f, #feb47b)',
+        'Észak-Amerika': 'linear-gradient(135deg, #43cea2, #185a9d)',
+        'Európa': 'linear-gradient(135deg, #ba5370, #f4e2d8)'
+    };
+
+    function setBackground(continent) {
+        document.body.style.background = continentColors[continent.split(', ')[0]] || 'linear-gradient(135deg, #757f9a, #d7dde8)';
+    }
+
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    function loadAnimal() {
+        if (availableAnimals.length === 0) {
+            feedback.textContent = "You've guessed all the animals!";
+            checkBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
+            clearInterval(timer); // Leállítja az utolsó időzítőt is
+            return;
+        }
+        animalImageContainer.classList.remove('visible');
+        setTimeout(() => {
+            const animalIndex = Math.floor(Math.random() * availableAnimals.length);
+            currentAnimal = availableAnimals.splice(animalIndex, 1)[0];
+            
+            animalImage.src = currentAnimal['Filenév'];
+            setBackground(currentAnimal['Kontinens']);
+            feedback.textContent = '';
+            climateSelect.value = '';
+            continentSelect.value = '';
+            checkBtn.style.display = 'inline-block';
+            nextBtn.style.display = 'none';
+            animalImageContainer.classList.add('visible');
+            startTimer();
+        }, 500);
+    }
+    
+    function startTimer() {
+        clearInterval(timer); // Biztonsági okokból törli az előző időzítőt
+        timeLeft = 20;
+        timerDisplay.textContent = `Time left: ${timeLeft}`;
+        progress.style.transition = 'none';
+        progress.style.width = '100%';
+        
+        setTimeout(() => {
+            progress.style.transition = 'width 20s linear';
+            progress.style.width = '0%';
+        }, 10);
+
+        timer = setInterval(() => {
+            timeLeft--;
+            timerDisplay.textContent = `Time left: ${timeLeft}`;
+            if (timeLeft <= 0) {
+                clearInterval(timer);
+                checkAnswer(true);
+            }
+        }, 1000);
+    }
+
+    function checkAnswer(timeout = false) {
+        clearInterval(timer);
+        progress.style.transition = 'none';
+        let roundScore = 0;
+        const selectedClimate = climateSelect.value;
+        const selectedContinent = continentSelect.value;
+        const correctClimates = currentAnimal['Klíma'].split(', ').map(c => c.trim());
+        const correctContinents = currentAnimal['Kontinens'].split(', ').map(c => c.trim());
+
+        let feedbackText = '';
+        if (!timeout) {
+            if (correctClimates.includes(selectedClimate)) {
+                roundScore++;
+            }
+            if (correctContinents.includes(selectedContinent)) {
+                roundScore++;
+            }
+            score += roundScore;
+            scoreDisplay.textContent = `Score: ${score}`;
+
+            if (roundScore === 2) {
+                feedbackText = '🎉 Perfect! You got 2 points! 🎉';
+            } else if (roundScore === 1) {
+                feedbackText = `👍 You got 1 point. The correct answer is Climate: ${correctClimates.join(', ')} and Continent: ${correctContinents.join(', ')}`;
+            } else {
+                feedbackText = `😢 Incorrect. The correct answer is Climate: ${correctClimates.join(', ')} and Continent: ${correctContinents.join(', ')}`;
+            }
+        } else {
+            feedbackText = `⏰ Time's up! The correct answer is Climate: ${correctClimates.join(', ')} and Continent: ${correctContinents.join(', ')}`;
+        }
+        feedback.innerHTML = feedbackText;
+        checkBtn.style.display = 'none';
+        nextBtn.style.display = 'inline-block';
+    }
+
+    // ÚJ RÉSZ: CSV feldolgozása és a játék inicializálása
+    
+    /**
+     * Beolvas egy CSV szöveget és objektumok tömbjévé alakítja.
+     * Kezeli az idézőjelek közé tett, vesszőket tartalmazó mezőket is.
+     * @param {string} text - A CSV formátumú szöveg.
+     * @returns {Array<Object>} - Az adatok objektumok tömbjeként.
+     */
+    function parseCSV(text) {
+        const result = [];
+        const lines = text.trim().split('\n');
+        const headers = lines.shift().split(',').map(h => h.trim());
+        
+        lines.forEach(line => {
+            const obj = {};
+            // Regex, ami a vesszők mentén bont, de figyelmen kívül hagyja az idézőjelek közötti vesszőket
+            const values = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
+            
+            headers.forEach((header, i) => {
+                if (values[i]) {
+                    // Eltávolítja az idézőjeleket az érték elejéről és végéről
+                    obj[header] = values[i].replace(/^"|"$/g, '').trim();
+                } else {
+                    obj[header] = '';
+                }
+            });
+            result.push(obj);
+        });
+        return result;
+    }
+
+    /**
+     * A játékot elindító fő függvény.
+     * Aszinkron módon betölti az adatokat a CSV fájlból, majd elindítja a játékot.
+     */
+    async function initializeGame() {
+        try {
+            const response = await fetch('animals.csv');
+            if (!response.ok) {
+                throw new Error('Hálózati hiba: ' + response.statusText);
+            }
+            const csvText = await response.text();
+            gameData = parseCSV(csvText);
+
+            // A játék indítása, miután az adatok betöltődtek
+            availableAnimals = [...gameData];
+            shuffleArray(availableAnimals);
+            loadAnimal();
+
+            // Eseménykezelők hozzárendelése
+            checkBtn.addEventListener('click', () => checkAnswer());
+            nextBtn.addEventListener('click', loadAnimal);
+
+        } catch (error) {
+            console.error('Hiba történt a játék adatainak betöltése közben:', error);
+            document.getElementById('game-container').innerHTML = '<h1>Hiba a játékadatok betöltésekor. Kérlek, ellenőrizd, hogy az `animals.csv` fájl létezik-e!</h1>';
+        }
+    }
+
+    // A játék elindítása
+    initializeGame();
+
+</script>
+
+</body>
+</html>
