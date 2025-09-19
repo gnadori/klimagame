@@ -223,18 +223,34 @@
         const selectedClimate = climateSelect.value;
         const selectedContinent = continentSelect.value;
         
-        // A CSV-ben több érték is lehet vesszővel elválasztva, ezért a .includes() metódust használjuk
-        const correctClimate = currentAnimal['Klíma'].includes(selectedClimate);
-        const correctContinent = currentAnimal['Kontinens'].includes(selectedContinent);
+        const isClimateCorrect = currentAnimal['Klíma'].includes(selectedClimate);
+        const isContinentCorrect = currentAnimal['Kontinens'].includes(selectedContinent);
+        let earnedPoints = 0;
 
-        if (correctClimate && correctContinent) {
-            resultText.textContent = "Helyes válasz! :)";
+        if (isClimateCorrect) {
+            earnedPoints++;
+        }
+        if (isContinentCorrect) {
+            earnedPoints++;
+        }
+        
+        score += earnedPoints;
+        scoreDisplay.textContent = score;
+
+        if (isClimateCorrect && isContinentCorrect) {
+            resultText.textContent = "Minden helyes! +2 pont!";
             resultText.style.color = "#4CAF50";
             document.body.style.background = '#28a745';
-            score++;
-            scoreDisplay.textContent = score;
+        } else if (isClimateCorrect) {
+            resultText.textContent = `Az éghajlat helyes (+1 pont), de a kontinens nem. Helyes kontinens: ${currentAnimal['Kontinens']}.`;
+            resultText.style.color = "#ffc107";
+            document.body.style.background = 'linear-gradient(to right, #ffb75e, #ed8f03)';
+        } else if (isContinentCorrect) {
+            resultText.textContent = `A kontinens helyes (+1 pont), de az éghajlat nem. Helyes éghajlat: ${currentAnimal['Klíma']}.`;
+            resultText.style.color = "#ffc107";
+            document.body.style.background = 'linear-gradient(to right, #ffb75e, #ed8f03)';
         } else {
-            resultText.textContent = `Sajnos nem... A helyes válasz: ${currentAnimal['Klíma']} és ${currentAnimal['Kontinens']}`;
+            resultText.textContent = `Sajnos egyik sem talált. A helyes válasz: ${currentAnimal['Klíma']} és ${currentAnimal['Kontinens']}`;
             resultText.style.color = "#f44336";
             document.body.style.background = '#dc3545';
         }
