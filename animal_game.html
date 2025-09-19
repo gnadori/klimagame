@@ -183,7 +183,8 @@
         resultText.textContent = `Lejárt az idő! A helyes válasz: ${currentAnimal['Klíma']} és ${currentAnimal['Kontinens']}`;
         resultText.style.color = "#f44336";
         document.body.style.background = '#dc3545';
-        checkBtn.disabled = true;
+        checkBtn.style.display = 'none';
+        nextBtn.style.display = 'inline-block';
     }
 
     /**
@@ -192,8 +193,8 @@
     function loadAnimal() {
         if (availableAnimals.length === 0) {
             resultText.textContent = `Játék vége! Végső pontszámod: ${score}.`;
-            checkBtn.disabled = true;
-            nextBtn.disabled = true;
+            checkBtn.style.display = 'none';
+            nextBtn.style.display = 'none';
             clearInterval(timerInterval);
             return;
         }
@@ -205,7 +206,10 @@
         resultText.textContent = '';
         climateSelect.selectedIndex = 0;
         continentSelect.selectedIndex = 0;
-        checkBtn.disabled = false;
+        
+        checkBtn.style.display = 'inline-block';
+        nextBtn.style.display = 'none';
+
         document.body.style.background = 'linear-gradient(to right, #3a6073, #3a7bd5)';
         
         // Timer reset and start
@@ -254,7 +258,8 @@
             resultText.style.color = "#f44336";
             document.body.style.background = '#dc3545';
         }
-        checkBtn.disabled = true;
+        checkBtn.style.display = 'none';
+        nextBtn.style.display = 'inline-block';
     }
 
     /**
