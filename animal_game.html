@@ -11,11 +11,20 @@
             text-align: center;
             transition: background 1s ease-in-out;
             color: #fff;
+            background: #3a7bd5;
+            background: -webkit-linear-gradient(to right, #3a6073, #3a7bd5);
+            background: linear-gradient(to right, #3a6073, #3a7bd5);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
         }
         #game-container {
             max-width: 500px;
-            margin: 50px auto;
-            padding: 20px;
+            width: 90%;
+            margin: 20px;
+            padding: 20px 30px;
             background-color: rgba(0, 0, 0, 0.4);
             border-radius: 20px;
             box-shadow: 0 10px 20px rgba(0,0,0,0.2);
@@ -25,149 +34,111 @@
             font-family: 'Fredoka One', cursive;
             font-size: 2.5em;
             text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
         }
         img {
             max-width: 100%;
-            height: auto;
+            height: 250px;
+            object-fit: cover;
             border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
-            transition: transform 0.3s ease-in-out;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            margin-bottom: 20px;
+            background-color: rgba(255,255,255,0.1);
         }
-        img:hover {
-            transform: scale(1.05);
-        }
-        .dropdowns {
-            margin-top: 20px;
+        .controls {
             display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-        select, button {
-            padding: 12px 20px;
-            font-size: 16px;
-            margin: 5px;
-            border: none;
-            border-radius: 25px;
-            cursor: pointer;
-            transition: all 0.3s ease;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 20px;
         }
         select {
+            padding: 12px;
+            border-radius: 10px;
+            border: none;
+            font-size: 1em;
             background-color: rgba(255, 255, 255, 0.8);
+            color: #333;
+            -webkit-appearance: none;
+            -moz-appearance: none;
+            appearance: none;
+            background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23333%22%20d%3D%22M287%2069.4a17.6%2017.6%200%200%200-13-5.4H18.4c-5%200-9.3%201.8-12.9%205.4A17.6%2017.6%200%200%200%200%2082.2c0%205%201.8%209.3%205.4%2012.9l128%20127.9c3.6%203.6%207.8%205.4%2012.8%205.4s9.2-1.8%2012.8-5.4L287%2095c3.5-3.5%205.4-7.8%205.4-12.8%200-5-1.9-9.2-5.5-12.8z%22%2F%3E%3C%2Fsvg%3E');
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 12px;
+        }
+        .buttons {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
         }
         button {
-            background-image: linear-gradient(45deg, #ff8a00, #e52e71);
-            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 10px;
+            font-size: 1em;
             font-weight: bold;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            color: white;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            font-family: 'Montserrat', sans-serif;
         }
         button:hover {
-            transform: translateY(-2px) scale(1.05);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
         }
-        #feedback {
+        #check-btn {
+            background-color: #4CAF50;
+        }
+        #next-btn {
+            background-color: #f44336;
+        }
+        #result {
             margin-top: 20px;
-            font-weight: bold;
             font-size: 1.2em;
-            height: 30px;
-            animation: fadeIn 0.5s ease-in-out;
-        }
-        #score, #timer {
-            font-size: 24px;
             font-weight: bold;
-            margin: 10px 0;
-            text-shadow: 1px 1px 2px rgba(0,0,0,0.2);
-        }
-        #timer {
-            color: #fff;
-        }
-        .progress-bar {
-            width: 100%;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-radius: 10px;
-            overflow: hidden;
-            margin-top: 10px;
-        }
-        .progress {
-            height: 10px;
-            width: 100%;
-            background-image: linear-gradient(45deg, #ff8a00, #e52e71);
-            transition: width 1s linear;
-        }
-        .animal-image-container {
-            opacity: 0;
-            transition: opacity 0.5s ease-in-out;
-        }
-        .animal-image-container.visible {
-            opacity: 1;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            min-height: 30px;
         }
     </style>
 </head>
 <body>
-
-<div id="game-container">
-    <h1>Guess the Animal's Climate and Continent!</h1>
-    <div id="score">Score: 0</div>
-    <div id="timer">Time left: 20</div>
-    <div class="progress-bar">
-        <div class="progress" id="progress"></div>
+    <div id="game-container">
+        <h1>Guess the Animal's Home!</h1>
+        <img id="animal-image" src="" alt="Animal">
+        <div class="controls">
+            <select id="climate">
+                <option value="" disabled selected>Válassz éghajlatot...</option>
+                <!-- Options will be dynamically loaded here -->
+            </select>
+            <select id="continent">
+                <option value="" disabled selected>Válassz kontinenst...</option>
+                <!-- Options will be dynamically loaded here -->
+            </select>
+        </div>
+        <div class="buttons">
+            <button id="check-btn">Check</button>
+            <button id="next-btn">Next Animal</button>
+        </div>
+        <p id="result"></p>
     </div>
-    <div class="animal-image-container" id="animal-image-container">
-        <img id="animal-image" src="" alt="Animal Image">
-    </div>
-    <div class="dropdowns">
-        <select id="climate-select">
-            <option value="">Select Climate</option>
-            <option value="Egyenlítői">Egyenlítői</option><option value="Sarkköri">Sarkköri</option><option value="Száraz kontinentális">Száraz kontinentális</option><option value="Szubtrópusi">Szubtrópusi</option><option value="Trópusi monszun">Trópusi monszun</option><option value="Átmeneti">Átmeneti</option><option value="Átmenetei">Átmenetei</option>
-        </select>
-        <select id="continent-select">
-            <option value="">Select Continent</option>
-            <option value="Afrika">Afrika</option><option value="Ausztrália">Ausztrália</option><option value="Dél-Amerika">Dél-Amerika</option><option value="Európa">Európa</option><option value="Ázsia">Ázsia</option><option value="Észak-Amerika">Észak-Amerika</option>
-        </select>
-    </div>
-    <button id="check-btn">Check Answer</button>
-    <button id="next-btn" style="display: none;">Next Animal</button>
-    <div id="feedback"></div>
-</div>
 
-<script>
-    // Az adatok tárolására szolgáló változó, amit a CSV-ből töltünk fel
-    let gameData = [];
-    let availableAnimals = [];
-    let currentAnimal;
-    let score = 0;
-    let timer;
-    let timeLeft = 20;
-
-    // DOM elemek kiválasztása (ez nem változott)
-    const animalImageContainer = document.getElementById('animal-image-container');
+    <script>
+    // DOM elemek
     const animalImage = document.getElementById('animal-image');
-    const climateSelect = document.getElementById('climate-select');
-    const continentSelect = document.getElementById('continent-select');
+    const climateSelect = document.getElementById('climate');
+    const continentSelect = document.getElementById('continent');
     const checkBtn = document.getElementById('check-btn');
     const nextBtn = document.getElementById('next-btn');
-    const feedback = document.getElementById('feedback');
-    const scoreDisplay = document.getElementById('score');
-    const timerDisplay = document.getElementById('timer');
-    const progress = document.getElementById('progress');
+    const resultText = document.getElementById('result');
 
-    // A háttérszínek objektuma (ez sem változott)
-    const continentColors = {
-        'Ausztrália': 'linear-gradient(135deg, #f7b733, #fc4a1a)',
-        'Ázsia': 'linear-gradient(135deg, #6a11cb, #2575fc)',
-        'Dél-Amerika': 'linear-gradient(135deg, #00b09b, #96c93d)',
-        'Afrika': 'linear-gradient(135deg, #ff7e5f, #feb47b)',
-        'Észak-Amerika': 'linear-gradient(135deg, #43cea2, #185a9d)',
-        'Európa': 'linear-gradient(135deg, #ba5370, #f4e2d8)'
-    };
+    // Játék adatok
+    let gameData = [];
+    let availableAnimals = [];
+    let currentAnimal = null;
 
-    function setBackground(continent) {
-        document.body.style.background = continentColors[continent.split(', ')[0]] || 'linear-gradient(135deg, #757f9a, #d7dde8)';
-    }
-
+    /**
+     * Megkever egy tömböt a Fisher-Yates algoritmussal.
+     * @param {Array} array - A megkeverendő tömb.
+     */
     function shuffleArray(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
@@ -175,110 +146,74 @@
         }
     }
 
+    /**
+     * Betölt egy új állatot a játékba.
+     */
     function loadAnimal() {
         if (availableAnimals.length === 0) {
-            feedback.textContent = "You've guessed all the animals!";
-            checkBtn.style.display = 'none';
-            nextBtn.style.display = 'none';
-            clearInterval(timer); // Leállítja az utolsó időzítőt is
+            resultText.textContent = "Gratulálok, végigjátszottad a játékot!";
+            checkBtn.disabled = true;
+            nextBtn.disabled = true;
             return;
         }
-        animalImageContainer.classList.remove('visible');
-        setTimeout(() => {
-            const animalIndex = Math.floor(Math.random() * availableAnimals.length);
-            currentAnimal = availableAnimals.splice(animalIndex, 1)[0];
-            
-            animalImage.src = currentAnimal['Filenév'];
-            setBackground(currentAnimal['Kontinens']);
-            feedback.textContent = '';
-            climateSelect.value = '';
-            continentSelect.value = '';
-            checkBtn.style.display = 'inline-block';
-            nextBtn.style.display = 'none';
-            animalImageContainer.classList.add('visible');
-            startTimer();
-        }, 500);
-    }
-    
-    function startTimer() {
-        clearInterval(timer); // Biztonsági okokból törli az előző időzítőt
-        timeLeft = 20;
-        timerDisplay.textContent = `Time left: ${timeLeft}`;
-        progress.style.transition = 'none';
-        progress.style.width = '100%';
-        
-        setTimeout(() => {
-            progress.style.transition = 'width 20s linear';
-            progress.style.width = '0%';
-        }, 10);
 
-        timer = setInterval(() => {
-            timeLeft--;
-            timerDisplay.textContent = `Time left: ${timeLeft}`;
-            if (timeLeft <= 0) {
-                clearInterval(timer);
-                checkAnswer(true);
-            }
-        }, 1000);
+        currentAnimal = availableAnimals.pop();
+        animalImage.src = currentAnimal['Filenév'];
+
+        // Reset
+        resultText.textContent = '';
+        climateSelect.selectedIndex = 0;
+        continentSelect.selectedIndex = 0;
+        checkBtn.disabled = false;
+        document.body.style.background = 'linear-gradient(to right, #3a6073, #3a7bd5)';
     }
 
-    function checkAnswer(timeout = false) {
-        clearInterval(timer);
-        progress.style.transition = 'none';
-        let roundScore = 0;
+    /**
+     * Ellenőrzi a felhasználó válaszát.
+     */
+    function checkAnswer() {
         const selectedClimate = climateSelect.value;
         const selectedContinent = continentSelect.value;
-        const correctClimates = currentAnimal['Klíma'].split(', ').map(c => c.trim());
-        const correctContinents = currentAnimal['Kontinens'].split(', ').map(c => c.trim());
+        
+        // A CSV-ben több érték is lehet vesszővel elválasztva, ezért a .includes() metódust használjuk
+        const correctClimate = currentAnimal['Klíma'].includes(selectedClimate);
+        const correctContinent = currentAnimal['Kontinens'].includes(selectedContinent);
 
-        let feedbackText = '';
-        if (!timeout) {
-            if (correctClimates.includes(selectedClimate)) {
-                roundScore++;
-            }
-            if (correctContinents.includes(selectedContinent)) {
-                roundScore++;
-            }
-            score += roundScore;
-            scoreDisplay.textContent = `Score: ${score}`;
-
-            if (roundScore === 2) {
-                feedbackText = '🎉 Perfect! You got 2 points! 🎉';
-            } else if (roundScore === 1) {
-                feedbackText = `👍 You got 1 point. The correct answer is Climate: ${correctClimates.join(', ')} and Continent: ${correctContinents.join(', ')}`;
-            } else {
-                feedbackText = `😢 Incorrect. The correct answer is Climate: ${correctClimates.join(', ')} and Continent: ${correctContinents.join(', ')}`;
-            }
+        if (correctClimate && correctContinent) {
+            resultText.textContent = "Helyes válasz! :)";
+            resultText.style.color = "#4CAF50";
+            document.body.style.background = '#28a745';
         } else {
-            feedbackText = `⏰ Time's up! The correct answer is Climate: ${correctClimates.join(', ')} and Continent: ${correctContinents.join(', ')}`;
+            resultText.textContent = `Sajnos nem... A helyes válasz: ${currentAnimal['Klíma']} és ${currentAnimal['Kontinens']}`;
+            resultText.style.color = "#f44336";
+            document.body.style.background = '#dc3545';
         }
-        feedback.innerHTML = feedbackText;
-        checkBtn.style.display = 'none';
-        nextBtn.style.display = 'inline-block';
+        checkBtn.disabled = true;
     }
 
-    // ÚJ RÉSZ: CSV feldolgozása és a játék inicializálása
-    
     /**
-     * Beolvas egy CSV szöveget és objektumok tömbjévé alakítja.
-     * Kezeli az idézőjelek közé tett, vesszőket tartalmazó mezőket is.
-     * @param {string} text - A CSV formátumú szöveg.
-     * @returns {Array<Object>} - Az adatok objektumok tömbjeként.
+     * CSV szöveget alakít át objektumok tömbjévé.
+     * @param {string} csvText - A CSV formátumú szöveg.
+     * @returns {Array<Object>} - Adatobjektumok tömbje.
      */
-    function parseCSV(text) {
+    function parseCSV(csvText) {
+        const lines = csvText.trim().split(/\r\n|\n/);
+        const headers = lines[0].split(',').map(header => header.trim());
         const result = [];
-        const lines = text.trim().split('\n');
-        const headers = lines.shift().split(',').map(h => h.trim());
-        
-        lines.forEach(line => {
-            const obj = {};
-            // Regex, ami a vesszők mentén bont, de figyelmen kívül hagyja az idézőjelek közötti vesszőket
+
+        lines.slice(1).forEach(line => {
+            // Ez a regularis kifejezés kezeli az idézőjelek között lévő vesszőket
             const values = line.match(/(".*?"|[^",]+)(?=\s*,|\s*$)/g) || [];
             
+            if (values.length !== headers.length) {
+                return; // Hibás sor átugrása
+            }
+
+            const obj = {};
             headers.forEach((header, i) => {
-                if (values[i]) {
-                    // Eltávolítja az idézőjeleket az érték elejéről és végéről
-                    obj[header] = values[i].replace(/^"|"$/g, '').trim();
+                 if (values[i]) {
+                    // Idézőjelek eltávolítása az érték elejéről és végéről
+                    obj[header] = values[i].replace(/^\"|\"$/g, '').trim();
                 } else {
                     obj[header] = '';
                 }
@@ -287,6 +222,42 @@
         });
         return result;
     }
+    
+    /**
+     * Dinamikusan feltölti a select (dropdown) elemeket a CSV adatokból.
+     * @param {Array<Object>} data - A feldolgozott CSV adatok.
+     */
+    function populateDropdowns(data) {
+        const climates = new Set();
+        const continents = new Set();
+
+        data.forEach(animal => {
+            // Azokat az értékeket, amikben van vessző (pl. "Európa, Ázsia"), feldaraboljuk
+            animal.Klíma.split(',').forEach(climate => climates.add(climate.trim()));
+            animal.Kontinens.split(',').forEach(continent => continents.add(continent.trim()));
+        });
+
+        // ABC sorrendbe rendezés
+        const sortedClimates = Array.from(climates).sort();
+        const sortedContinents = Array.from(continents).sort();
+        
+        // Klíma dropdown feltöltése
+        sortedClimates.forEach(climate => {
+            const option = document.createElement('option');
+            option.value = climate;
+            option.textContent = climate;
+            climateSelect.appendChild(option);
+        });
+
+        // Kontinens dropdown feltöltése
+        sortedContinents.forEach(continent => {
+            const option = document.createElement('option');
+            option.value = continent;
+            option.textContent = continent;
+            continentSelect.appendChild(option);
+        });
+    }
+
 
     /**
      * A játékot elindító fő függvény.
@@ -300,6 +271,9 @@
             }
             const csvText = await response.text();
             gameData = parseCSV(csvText);
+            
+            // A select opciók dinamikus létrehozása
+            populateDropdowns(gameData);
 
             // A játék indítása, miután az adatok betöltődtek
             availableAnimals = [...gameData];
@@ -307,19 +281,18 @@
             loadAnimal();
 
             // Eseménykezelők hozzárendelése
-            checkBtn.addEventListener('click', () => checkAnswer());
+            checkBtn.addEventListener('click', checkAnswer);
             nextBtn.addEventListener('click', loadAnimal);
 
         } catch (error) {
             console.error('Hiba történt a játék adatainak betöltése közben:', error);
-            document.getElementById('game-container').innerHTML = '<h1>Hiba a játékadatok betöltésekor. Kérlek, ellenőrizd, hogy az `animals.csv` fájl létezik-e!</h1>';
+            document.getElementById('game-container').innerHTML = '<h1>Hiba a játékadatok betöltésekor. Kérlek, ellenőrizd, hogy az `animals.csv` fájl elérhető-e.</h1>';
         }
     }
 
-    // A játék elindítása
+    // A játék indítása az oldal betöltődésekor
     initializeGame();
 
-</script>
-
+    </script>
 </body>
 </html>
